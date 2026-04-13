@@ -411,9 +411,14 @@ If asked about scenarios (e.g. "what if we add more ICU beds"), use the Scenario
         # Chat input
         if question := st.chat_input("Ask anything about the Digital Twin data..."):
             st.session_state.messages.append({"role": "user", "content": question})
-            with st.chat_message("user"):
-                st.write(question)
+            st.rerun()
 
+        # Process last unanswered user message (from chat_input or suggestion buttons)
+        if (st.session_state.messages and
+                st.session_state.messages[-1]["role"] == "user"):
+            last_q = st.session_state.messages[-1]["content"]
+            with st.chat_message("user"):
+                st.write(last_q)
             with st.chat_message("assistant"):
                 with st.spinner("Querying Digital Twin..."):
                     try:
