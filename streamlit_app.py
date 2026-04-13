@@ -301,8 +301,19 @@ elif page == "🤖 Ask AI":
     import anthropic
     import os
 
-    api_key = st.text_input("Enter Claude API Key", type="password",
-                            value=os.environ.get("ANTHROPIC_API_KEY", ""))
+    # Auto-load from Streamlit Secrets or environment variable
+    default_key = ""
+    if "ANTHROPIC_API_KEY" in st.secrets:
+        default_key = st.secrets["ANTHROPIC_API_KEY"]
+    elif os.environ.get("ANTHROPIC_API_KEY"):
+        default_key = os.environ.get("ANTHROPIC_API_KEY")
+
+    if default_key:
+        api_key = default_key
+        st.success("✅ API Key loaded automatically")
+    else:
+        api_key = st.text_input("Enter Claude API Key", type="password",
+                                placeholder="sk-ant-...")
 
     if api_key:
         # ── Build full Digital Twin context ──
